@@ -1,12 +1,21 @@
 pipeline {
     agent any
 
+    environment {
+        PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+    }
+
     stages {
 
-        stage('Clone Repository') {
+        stage('Verify Node') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/kanishkgandecha/jenkins_lab_demo.git'
+                sh '''
+                    echo "Node Version:"
+                    node -v
+
+                    echo "NPM Version:"
+                    npm -v
+                '''
             }
         }
 
@@ -24,18 +33,18 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'npm test -- --watchAll=false'
+                sh 'CI=true npm test -- --watchAll=false'
             }
         }
     }
 
     post {
         success {
-            echo 'Build completed successfully!'
+            echo 'Build Successful!'
         }
 
         failure {
-            echo 'Build failed!'
+            echo 'Build Failed!'
         }
 
         always {
