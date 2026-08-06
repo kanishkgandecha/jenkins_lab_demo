@@ -3,11 +3,20 @@ pipeline {
 
     environment {
         PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+        GIT_REPO = "https://github.com/kanishkgandecha/jenkins_lab_demo.git"
+        GIT_BRANCH = "main"
     }
 
     stages {
 
-        stage('Verify Node') {
+        stage('Clone GitHub Repository') {
+            steps {
+                git branch: "${GIT_BRANCH}",
+                    url: "${GIT_REPO}"
+            }
+        }
+
+        stage('Verify Node & NPM') {
             steps {
                 sh '''
                     echo "Node Version:"
@@ -40,11 +49,11 @@ pipeline {
 
     post {
         success {
-            echo 'Build Successful!'
+            echo "Build Successful!"
         }
 
         failure {
-            echo 'Build Failed!'
+            echo "Build Failed!"
         }
 
         always {
